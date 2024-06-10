@@ -1,0 +1,193 @@
+---
+title: "rproj1"
+author: "foster"
+date: "2024-06-06"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+# Project 1
+
+## Data Cleaning and Preprocessing:
+
+### install these packages "tibble", "tidyr", "psych", "dplyr", "writexl"
+### first load packages
+library(tibble)
+install.packages("writexl")
+library("tidyr", "psych")
+library(dplyr)
+library(writexl)
+library(tidyverse)
+
+
+### Generate 200 by 200 synthetic data in a matrix form
+nrow <- 200
+ncol <- 200
+set.seed(123)
+
+## perfect data
+theData <- matrix(rnorm(nrow * ncol), ncol = ncol, nrow = nrow)
+
+## imperfect data
+### introducing missing data
+missing_data <- sample(length(theData), length(theData) * 0.1)
+theData[missing_data] <- NA
+
+## Introducing outliers 
+outliers_in_data <- sample(length(theData), length(theData) * 0.05)
+theData[outliers_in_data] <- outliers_in_data[outliers_in_data] * 100
+
+## Introducing inconsistent formatting 
+format_character <- sample(length(theData), length(theData) * 0.05)
+theData[format_character] <- as.character(theData[format_character])
+
+
+### convert the matrix to a dataframe
+theData_new <- as_tibble(theData)
+
+## duplicates
+duplicate_data <- sample(1:nrow, 10, replace = TRUE)
+theData_new <- bind_rows(theData_new, theData_new[duplicate_data, ])
+
+## incorr values
+incorr_val_indices <- sample(length(theData), length(theData) * 0.05)
+theData[incorr_val_indices] <- abs(theData[incorr_val_indices])
+
+## write.csv(theData_new, "~/Desktop/data_new.csv")
+
+#### Load the inaccurate Data 
+
+inacc_data <- read.csv("~/Desktop/data_new.csv")
+
+
+### issues with the data are: 
+ # 1) missing data 
+ # 2) duplicates in the data
+ # 3) characters instead of numerical contents in data
+ # 4) Outliers in the data 
+
+### All these issues will be dealt with. 
+
+
+
+class(inacc_data$V1)
+
+# This is necessary to inspect the data 
+glimpse(inacc_data)
+
+# Dealing with NA contents in the data 
+# the question is what values will replace the NA? 
+# Answer is to use the mean of the column to do that 
+
+cleaned_data_1 <- inacc_data %>% 
+  mutate(across(everything(), ~ ifelse(is.na(.), mean(., na.rm = TRUE), .)))
+
+# first file stage 
+write.csv(cleaned_data_1, "~/Desktop/cleaned_file.csv")
+
+# the next stage is the to REMOVE duplicates 
+cleaned_data_1 <- cleaned_data_1 %>% distinct()
+
+write.csv(cleaned_data_1, "~/Desktop/cleaned_file1.csv")
+
+
+# Handling outliers. 
+## this can be done by using the 99th percentile as a cut off point. 
+
+the_outlier_threshold <- cleaned_data_1 %>% 
+  summarize(across(where(is.numeric), ~ quantile(., 0.99, na.rm = TRUE)))
+
+cleaned_data_1 <- cleaned_data_1 %>% 
+  mutate(across(where(is.numeric), ~ ifelse(. > the_outlier_threshold[1, cur_column()], the_outlier_threshold[1, cur_column], .)))
+write.csv(the_outlier_threshold, "~/Desktop/cleaned_data2.csv")
+
+
+glimpse(cleaned_data_1)
+
+## Deal with negative values 
+cleaned_data_1 <- cleaned_data_1 %>% 
+  mutate(across(where(is.numeric), ~ ifelse(. < 0, abs(.), .)))
+
+write.csv(cleaned_data_1, "~/Desktop/newclean.csv")
+
+
+## new remove duplicates
+
+remv_duplictes <- function(cleaned_data_1, round_digits = 3) {
+  cleaned_data_1 %>% 
+    mutate(across(where(is.numeric), ~ round(., digits = round_digits))) %>% 
+    distinct()
+}
+
+remv_duplictes(cleaned_data_1)
+
+remv_dv <-  cleaned_data_1 %>%
+  mutate(across(where(is.numeric), ~ round(., digits = 3))) %>%
+  distinct()
+
+write.csv(remv_dv, "~/Desktop/aprd12.csv")
+
+save_duplc <- which(duplicated(cleaned_data_1[, 2]))
+
+write.csv(save_duplc, "~/Desktop/meona.csv")
+
+# This is the second level of cleaning the data 
+# This function is important because it produces much more clarity on the
+# replacing negative data
+
+
+### make a simple plot 
+
+library(ggplot2)
+cleaned_data_1$V2
+colmn_name = c("V1", "V2", "V3")
+
+library(corrplot)
+
+numeric_columns <- cleaned_data_1 %>% select(where(is.numeric))
+
+cleaned_data_1 %>% select(where(is.numeric))
+corr_matrix <- cor(numeric_columns, use = "complete.obs")
+corrplot(corr_matrix, method = "color", type = "lower", order = "hclust",
+         tl.col = "black", tl.srt = 45, tl.cex = 0.6)
+
+ggsave("~/Desktop/correlation_matrix.png", width = 8, height = 6)
+
+
+plot <- ggpairs(numeric_columns)
+ggsave("~/Desktop/pair_plot.png", plot = plot, width = 15, height = 15)
+
+### the writeup
+### Cleaned data is essential for accurate, error free and precise data analysis. 
+### To start with, data scientists need to inspect data and ensure all the excesses and errors are removed. 
+### there are different forms of errors and inaccuracies in data and they have to be removed or correctd. 
+### 5 important areas have to be looked at. 
+#### firstly, the need to inspect the data in its entirety. 
+#### secondy, the necessary strategies needed to correct those inaccuracies before stating rigth whe the analysis. 
+#### first, inspect for missing data, one of the most occurance is missing data, the ability to omit specic data due to enrrornous errorpoing or otherwise. 
+### secondly, duplicates, there have been many times when data have contained duplicates in one form or the other. 
+#### thirdly, outliers, these are data that seem to be off the normal ranges. They can be either very small or very big. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
