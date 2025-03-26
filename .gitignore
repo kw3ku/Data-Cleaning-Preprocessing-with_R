@@ -1,4 +1,33 @@
+
+# RStudio files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# Ignore the 'ignore' folder
+ignore/
+
+
+# History files
+.Rapp.history
+
+# Session Data files
+.RData
+
+# RStudio Project files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# RStudio-generated folders
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Compiled source
+*.o
+*.so
+*.dll
