@@ -51,8 +51,8 @@ The data cleaning pipeline includes the following steps:
 ![Glucose Distribution Before Cleaning](path/to/glucose_distribution_before.png)
 ![Glucose Distribution After Cleaning](path/to/glucose_distribution_after.png)
 
-<img src="screenshots/glucoseAfter.png" width="600">
 <img src="screenshots/glucoseb4.png" width="600">
+<img src="screenshots/glucosAfter.png" width="600">
 
 
 
