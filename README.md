@@ -1,8 +1,9 @@
 # Data Cleaning and Preprocessing Project
+## 🧹 Cleaning Healthcare Data in R  
+### *Synthetic EHR Error Detection, Preprocessing & Validation*  
 
 ## Overview
-
-This project involves generating synthetic patient data and performing data cleaning and preprocessing tasks in R. The goal is to create a clean and consistent dataset for further analysis.
+R Data Cleaning Toolkit: Handling Missing Data, Outliers & Dates in Healthcare. This project involves generating synthetic patient data and performing data cleaning and preprocessing tasks in R. The goal is to create a clean and consistent dataset for further analysis.
 
 ## Data Generation
 
