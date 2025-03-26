@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project involves generating synthetic patient data and performing data cleaning and preprocessing tasks. The goal is to create a clean and consistent dataset for further analysis.
+This project involves generating synthetic patient data and performing data cleaning and preprocessing tasks in R. The goal is to create a clean and consistent dataset for further analysis.
 
 ## Data Generation
 
